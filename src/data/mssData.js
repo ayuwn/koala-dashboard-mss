@@ -480,7 +480,7 @@ export const statisticBreakdown = {
     labels: ['Project Internal', 'Project BSIM', 'Project SMM', 'Core Platform'],
     datasets: [
       {
-        label: 'Logged Hours',
+        label: 'Logged',
         backgroundColor: ['#0069A7', '#58ACFF', '#FFA86A', '#539D5A'],
         data: [120, 280, 160, 95],
         borderRadius: 8,
@@ -491,7 +491,7 @@ export const statisticBreakdown = {
     labels: ['WAO', 'WFA', 'WFH', 'WFO Client', 'WFO Rempoa'],
     datasets: [
       {
-        label: 'Distribution (%)',
+        label: 'Days',
         backgroundColor: ['#024981', '#4088C2', '#58ACFF', '#FFA86A', '#539D5A'],
         data: [15, 20, 30, 20, 15],
       }

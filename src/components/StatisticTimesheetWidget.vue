@@ -153,13 +153,13 @@ const viewConfig = {
   project: {
     labels: ['Project Internal', 'Project BSIM', 'Project SMM'],
     colors: ['#0069A7', '#58ACFF', '#FFA86A', '#539D5A'],
-    unit: 'Hours Logged',
+    unit: 'Hours',
     dataKey: 'timesheetProjects'
   },
   site: {
     labels: ['WAO', 'WFA', 'WFH', 'WFO Client', 'WFO Rempoa'],
     colors: ['#024981', '#4088C2', '#58ACFF', '#FFA86A', '#539D5A'],
-    unit: 'Distribution (%)',
+    unit: 'Days',
     dataKey: 'timesheetSites'
   }
 }
