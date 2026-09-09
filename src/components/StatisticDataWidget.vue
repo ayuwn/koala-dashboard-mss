@@ -14,28 +14,18 @@
             </span>
           </div>
           <p class="text-[11px] text-slate-400 font-normal mt-0.5">
-            Leave, overtime & reimbursement metrics &bull; <span class="text-koala-blue-800 font-medium">{{ formattedDateRange }}</span>
+            Leave &amp; overtime metrics &bull; <span class="text-koala-blue-800 font-medium">{{ formattedDateRange }}</span>
           </p>
         </div>
 
         <!-- Chart Type Switcher Dropdown -->
         <div class="flex items-center gap-1.5 self-start sm:self-auto">
-          <!-- <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider hidden xs:inline">Type:</span> -->
           <div class="relative">
             <select
               v-model="selectedChartType"
               class="appearance-none bg-white/90 backdrop-blur-md border border-slate-200/90 rounded-xl pl-2.5 pr-7 py-1 text-xs font-bold text-koala-blue-900 focus:outline-none focus:ring-2 focus:ring-koala-blue-500/20 cursor-pointer shadow-2xs hover:border-koala-blue-300 transition-all"
             >
-              <!-- <option value="column">📊 Column (Vertical)</option>
-              <option value="bar">📊 Bar (Horizontal)</option>
-              <option value="line">📈 Line Chart</option>
-              <option value="area">📉 Area (Filled)</option>
-              <option value="pie">🥧 Pie Chart</option>
-              <option value="doughnut">🍩 Doughnut</option>
-              <option value="radar">🕸️ Radar Chart</option>
-              <option value="polarArea">🎯 Polar Area</option>
-              <option value="combo">⚡ Combo (Bar + Line)</option> -->
-               <option value="column">Column (Vertical)</option>
+              <option value="column">Column (Vertical)</option>
               <option value="bar">Bar (Horizontal)</option>
               <option value="line">Line Chart</option>
               <option value="area">Area (Filled)</option>
@@ -74,17 +64,6 @@
             ]"
           >
             Overtime
-          </button>
-          <button 
-            @click="activeCategory = 'reimbursement'"
-            :class="[
-              'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all',
-              activeCategory === 'reimbursement' 
-                ? 'bg-gradient-to-r from-koala-blue-900 to-koala-blue-800 text-white shadow-xs' 
-                : 'text-slate-500 hover:text-slate-900'
-            ]"
-          >
-            Reimbursement
           </button>
         </div>
 
@@ -179,11 +158,6 @@ const subcategoryConfig = {
     labels: ['Overtime Weekend/Holiday', 'Overtime Normal Day'],
     colors: ['#3A70C2', '#ED7D31'],
     unit: 'Hours'
-  },
-  reimbursement: {
-    labels: ['Meal Allowance', 'Transport Overtime', 'Medical'],
-    colors: ['#3A70C2', '#ED7D31', '#A5A5A5'],
-    unit: 'x Rp 1.000'
   }
 }
 

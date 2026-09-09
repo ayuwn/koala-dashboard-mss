@@ -69,7 +69,6 @@ export function useDashboardFilter() {
       leave: list.filter(i => i.type === 'Leave Request').length,
       overtime: list.filter(i => i.type === 'Overtime').length,
       timesheet: list.filter(i => i.type === 'Timesheet').length,
-      reimbursement: list.filter(i => i.type === 'Reimbursement').length,
       total: list.length
     }
   })

@@ -167,7 +167,7 @@ const mainMenuItems = [
   { name: 'Leave Request', icon: Calendar },
   { name: 'On Behalf', icon: Users },
   { name: 'Overtime Request', icon: Clock },
-  { name: 'Reimbursement Request', icon: Receipt },
+  // { name: 'Reimbursement Request', icon: Receipt },
   { name: 'Timesheet', icon: ClipboardCheck },
 ]
 

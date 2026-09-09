@@ -1,6 +1,6 @@
 <template>
   <div class="glossy-card rounded-2xl p-5 sm:p-6 flex flex-col h-full">
-    <!-- Header: Icon + Title & Subtitle + New Meeting Button -->
+    <!-- Header: Icon + Title & Subtitle + Week Navigation Buttons -->
     <div class="flex items-center justify-between pb-4 border-b border-slate-100/80 mb-4">
       <div class="flex items-center gap-3">
         <!-- Calendar Icon in light blue box -->
@@ -9,60 +9,102 @@
         </div>
         <div>
           <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight leading-tight">
-            Work Calendar & Schedule
+            Work Calendar &amp; Schedule
           </h3>
           <p class="text-xs text-slate-500 font-normal mt-0.5">
-            September 2026
+            {{ currentMonthYearLabel }}
           </p>
         </div>
       </div>
 
-      <!-- + New Meeting Button -->
-      <!-- <button 
-        @click="openNewMeetingModal"
-        class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-koala-blue-900 to-koala-blue-800 hover:from-koala-blue-800 hover:to-koala-blue-700 text-white text-xs font-semibold shadow-glossy-btn border border-koala-blue-700/60 transition-all hover:scale-102 active:scale-98"
-      >
-        <Plus class="w-3.5 h-3.5 stroke-[2.5]" />
-        <span>New Meeting</span>
-      </button> -->
+      <!-- Navigation for Previous & Next Week -->
+      <div class="flex items-center gap-1.5">
+        <button 
+          @click="prevWeek"
+          class="p-1.5 rounded-lg bg-white/90 hover:bg-white text-slate-600 hover:text-koala-blue-900 border border-slate-200/80 hover:border-koala-blue-200 shadow-2xs transition-all active:scale-95"
+          title="Previous Week"
+          aria-label="Previous Week"
+        >
+          <ChevronLeft class="w-4 h-4" />
+        </button>
+        <button 
+          @click="resetToCurrentWeek"
+          class="px-2 py-1 text-[11px] font-semibold rounded-lg bg-white/90 hover:bg-white text-koala-blue-900 border border-slate-200/80 hover:border-koala-blue-200 shadow-2xs transition-all active:scale-95"
+          title="Today / Current Week"
+        >
+          Today
+        </button>
+        <button 
+          @click="nextWeek"
+          class="p-1.5 rounded-lg bg-white/90 hover:bg-white text-slate-600 hover:text-koala-blue-900 border border-slate-200/80 hover:border-koala-blue-200 shadow-2xs transition-all active:scale-95"
+          title="Next Week"
+          aria-label="Next Week"
+        >
+          <ChevronRight class="w-4 h-4" />
+        </button>
+      </div>
     </div>
 
-    <!-- Mini Weekly Calendar Strip -->
+    <!-- Mini Weekly Calendar Strip with Leave Count Badges -->
     <div class="p-2.5 sm:p-3 rounded-xl bg-white/70 border border-slate-100 shadow-2xs mb-5">
       <div class="grid grid-cols-7 gap-1 text-center">
         <div 
           v-for="day in dynamicWeekDays" 
-          :key="day.dayName"
-          @click="selectedDay = day.date"
-          class="flex flex-col items-center justify-center py-1 cursor-pointer transition-all"
+          :key="day.dateKey"
+          @click="selectDay(day)"
+          class="flex flex-col items-center justify-center py-1 cursor-pointer transition-all group"
         >
           <!-- Day Name (MIN, SEN, SEL, ...) -->
           <span 
             :class="[
               'text-[10px] uppercase font-bold tracking-wider mb-1 transition-colors',
-              selectedDay === day.date ? 'text-koala-blue-900' : 'text-slate-400'
+              selectedDateKey === day.dateKey 
+                ? 'text-koala-blue-900 font-extrabold' 
+                : day.isSundayOrMonday || day.isPast
+                  ? 'text-slate-300' 
+                  : 'text-slate-400 group-hover:text-slate-600'
             ]"
           >
             {{ day.dayName }}
           </span>
 
-          <!-- Date Number Badge -->
-          <div 
-            :class="[
-              'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all',
-              selectedDay === day.date 
-                ? 'bg-koala-blue-900 text-white shadow-md shadow-koala-blue-900/25 scale-105' 
-                : 'text-slate-700 hover:bg-slate-100/80'
-            ]"
-          >
-            {{ day.date }}
+          <!-- Date Number Box Container with Leave Badge -->
+          <div class="relative">
+            <div 
+              :class="[
+                'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all',
+                selectedDateKey === day.dateKey 
+                  ? 'bg-koala-blue-900 text-white shadow-md shadow-koala-blue-900/25 scale-105' 
+                  : day.isToday
+                    ? 'border border-koala-blue-600 text-koala-blue-900 bg-koala-blue-50 font-extrabold'
+                    : day.isPast
+                      ? 'text-slate-400 hover:bg-slate-100/60'
+                      : 'text-slate-700 hover:bg-slate-100/80'
+              ]"
+            >
+              {{ day.dateNumber }}
+            </div>
+
+            <!-- Small Leave Count Indicator Badge on Bottom-Right of the Date -->
+            <span 
+              v-if="day.leaveCount > 0"
+              :class="[
+                'absolute -bottom-1 -right-1.5 min-w-[15px] h-3.5 px-0.5 rounded-full flex items-center justify-center text-[9px] font-extrabold shadow-2xs border transition-all',
+                selectedDateKey === day.dateKey
+                  ? 'bg-koala-orange-500 text-white border-white ring-1 ring-koala-blue-900/20 scale-105'
+                  : 'bg-amber-100 text-amber-800 border-amber-300 group-hover:bg-amber-200'
+              ]"
+              :title="`${day.leaveCount} upcoming team leave(s)`"
+            >
+              {{ day.leaveCount }}
+            </span>
           </div>
 
-          <!-- Orange dot indicator for days with events -->
+          <!-- Subtle dot indicator for days with scheduled sessions -->
           <div class="h-1 flex items-center justify-center mt-1">
             <span 
-              v-if="day.hasEvent && selectedDay !== day.date" 
-              class="w-1 h-1 rounded-full bg-koala-orange-600"
+              v-if="day.hasSession && selectedDateKey !== day.dateKey" 
+              class="w-1 h-1 rounded-full bg-koala-blue-600"
             ></span>
           </div>
         </div>
@@ -79,7 +121,7 @@
           </span>
         </div>
         <span class="text-[10px] font-medium text-slate-400">
-          {{ selectedDayName }}, {{ selectedDay }} Sep 2026
+          {{ selectedDayFormatted }}
         </span>
       </div>
 
@@ -112,17 +154,19 @@
       <!-- Empty State if no leaves on selected date -->
       <div v-else class="p-3.5 rounded-xl bg-white/50 border border-slate-100 text-center flex flex-col items-center justify-center">
         <p class="text-xs font-medium text-slate-500">No team leaves scheduled</p>
-        <span class="text-[10px] text-slate-400 mt-0.5">All team members are active on this date</span>
+        <span class="text-[10px] text-slate-400 mt-0.5">
+          {{ isSelectedDatePast ? 'Past date — no upcoming leaves' : 'All team members are active on this date' }}
+        </span>
       </div>
     </div>
 
-    <!-- Section 2: TODAY'S SESSIONS (Filtered / Displayed by selectedDay) -->
+    <!-- Section 2: SESSIONS & AGENDA (Filtered / Displayed by selectedDay) -->
     <div class="space-y-2.5">
       <div class="flex items-center justify-between text-slate-400 mb-2">
         <div class="flex items-center gap-1.5">
           <Video class="w-3.5 h-3.5 text-koala-blue-700/70" />
           <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            Sessions & Agenda
+            Sessions &amp; Agenda
           </span>
         </div>
         <span class="text-[10px] font-medium text-slate-400">
@@ -162,119 +206,234 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { CalendarDays, Plus, Users, Video } from 'lucide-vue-next'
+import { CalendarDays, Users, Video, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
-const selectedDay = ref(7)
+// Current local date reference: 9 September 2026
+const currentDate = new Date(2026, 8, 9)
+const todayMidnight = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()).getTime()
 
-const baseWeekDays = [
-  { dayName: 'MIN', date: 6 },
-  { dayName: 'SEN', date: 7 },
-  { dayName: 'SEL', date: 8 },
-  { dayName: 'RAB', date: 9 },
-  { dayName: 'KAM', date: 10 },
-  { dayName: 'JUM', date: 11 },
-  { dayName: 'SAB', date: 12 },
-]
+// Week navigation offset (0 = current week, +1 = next week, -1 = prev week)
+const currentWeekOffset = ref(0)
 
-// Master team leave dataset with active dates in September
+// Selected date key formatted as 'YYYY-MM-DD'
+const selectedDateKey = ref('2026-09-09')
+
+const dayNames = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB']
+
+// Compute start of week (Sunday) based on currentWeekOffset
+const startOfWeek = computed(() => {
+  const date = new Date(currentDate)
+  const currentDayOfWeek = date.getDay() // 0 = Sunday, 3 = Wednesday
+  date.setDate(date.getDate() - currentDayOfWeek + (currentWeekOffset.value * 7))
+  date.setHours(0, 0, 0, 0)
+  return date
+})
+
+// Master upcoming team leaves dataset (Only future / upcoming dates, strictly excluding Sunday and Monday)
 const masterTeamLeaves = [
+  // Current Week (9 - 12 Sep 2026)
   {
     name: 'Gibral Anugrah',
     type: 'Cuti Tahunan',
-    period: '7 Sep',
-    dates: [7],
+    period: '9 Sep',
+    dateKeys: ['2026-09-09'],
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
   },
   {
-    name: 'Ahmad Mukafi Andrian',
-    type: 'Special Leave',
-    period: '6 Sep',
-    dates: [6],
-    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
-  },
-  {
     name: 'Sayyid Taqi Al-Haidar',
-    type: 'Annual Leave',
-    period: '10 – 12 Sep',
-    dates: [10, 11, 12],
+    type: 'Cuti Tahunan',
+    period: '10 – 11 Sep',
+    dateKeys: ['2026-09-10', '2026-09-11'],
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
   },
   {
     name: 'Zulfahmi Kemal',
-    type: 'Sick Leave',
-    period: '10 Sep & 14 Sep',
-    dates: [10, 14],
+    type: 'Cuti Sakit',
+    period: '10 Sep',
+    dateKeys: ['2026-09-10'],
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  },
+  // {
+  //   name: 'Oscar Piastri',
+  //   type: 'Remote Working',
+  //   period: '11 Sep',
+  //   dateKeys: ['2026-09-11'],
+  //   avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+  // },
+  // {
+  //   name: 'Ayu Widianingsih',
+  //   type: 'Work From Anywhere (WFA)',
+  //   period: '12 Sep',
+  //   dateKeys: ['2026-09-12'],
+  //   avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+  // },
+  // Next Week (15 - 19 Sep 2026 - Tuesday to Saturday only, Sunday & Monday have 0)
+  {
+    name: 'Ahmad Mukafi Andrian',
+    type: 'Izin Setengah Hari',
+    period: '15 Sep',
+    dateKeys: ['2026-09-15'],
+    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
+  },
+  {
+    name: 'Sikah Nurbayati',
+    type: 'Cuti Tahunan',
+    period: '16 – 17 Sep',
+    dateKeys: ['2026-09-16', '2026-09-17'],
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+  },
+  {
+    name: 'Zulfahmi Kemal',
+    type: 'WFH',
+    period: '16 Sep',
+    dateKeys: ['2026-09-16'],
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
   },
   {
-    name: 'Oscar Piastri',
-    type: 'Remote Working',
-    period: '11 – 12 Sep',
-    dates: [11, 12, 18],
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-  },
-  {
     name: 'Ayu Widianingsih',
-    type: 'Work From Anywhere (WFA)',
-    period: '12 Sep',
-    dates: [12],
+    type: 'WFH',
+    period: '17 Sep',
+    dateKeys: ['2026-09-17'],
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-  }
+  },
+  // {
+  //   name: 'Sayyid Altaqi',
+  //   type: 'Technical Workshop',
+  //   period: '18 – 19 Sep',
+  //   dateKeys: ['2026-09-18', '2026-09-19'],
+  //   avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+  // }
 ]
 
 // Master sessions dataset
 const masterSessions = [
   {
+    title: 'Daily Engineering Standup',
+    time: '09:00 – 09:30 WIB',
+    location: 'Meeting Room Alpha / Google Meet',
+    participants: '8 Participants',
+    dateKeys: ['2026-09-09', '2026-09-10', '2026-09-11', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18']
+  },
+  {
     title: 'Sprint Review & Retro Q3',
     time: '14:00 – 15:30 WIB',
     location: 'Meeting Room Alpha / Zoom',
     participants: '12 Participants',
-    dates: [7, 10, 11]
-  },
-  {
-    title: '1-on-1 Performance Sync with Gibral',
-    time: '16:00 – 16:45 WIB',
-    location: 'Focus Pod 3',
-    participants: '2 Participants',
-    dates: [7, 8, 12]
+    dateKeys: ['2026-09-10', '2026-09-17']
   },
   {
     title: 'Squad BSIM Architecture Alignment',
     time: '10:00 – 11:30 WIB',
     location: 'Meeting Room 2',
     participants: '6 Participants',
-    dates: [6, 9, 10]
+    dateKeys: ['2026-09-09', '2026-09-16']
   }
 ]
 
-// Compute orange event dots dynamically
+// Dynamic 7-day strip for the active week
 const dynamicWeekDays = computed(() => {
-  return baseWeekDays.map(day => {
-    const hasLeave = masterTeamLeaves.some(leave => leave.dates.includes(day.date))
-    const hasSession = masterSessions.some(session => session.dates.includes(day.date))
-    return {
-      ...day,
-      hasEvent: hasLeave || hasSession
+  const days = []
+  const start = new Date(startOfWeek.value)
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start)
+    d.setDate(start.getDate() + i)
+    
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const dayNum = String(d.getDate()).padStart(2, '0')
+    const dateKey = `${year}-${month}-${dayNum}`
+    const dTime = d.getTime()
+
+    // Condition 1: Dates before current date (past dates) have 0 upcoming leaves
+    const isPast = dTime < todayMidnight
+    const isToday = dTime === todayMidnight
+
+    // Condition 2: Sunday (0) and Monday (1) have 0 leave data
+    const isSundayOrMonday = i === 0 || i === 1
+
+    // Calculate leaves only if NOT past and NOT Sunday/Monday
+    let leavesOnDay = []
+    if (!isPast && !isSundayOrMonday) {
+      leavesOnDay = masterTeamLeaves.filter(leave => leave.dateKeys.includes(dateKey))
     }
-  })
+
+    const hasSession = masterSessions.some(session => session.dateKeys.includes(dateKey))
+
+    days.push({
+      dateKey,
+      dayName: dayNames[i],
+      dateNumber: d.getDate(),
+      fullDate: d,
+      isPast,
+      isToday,
+      isSundayOrMonday,
+      leaveCount: leavesOnDay.length,
+      hasSession
+    })
+  }
+
+  return days
 })
 
-const selectedDayName = computed(() => {
-  const found = baseWeekDays.find(d => d.date === selectedDay.value)
-  return found ? found.dayName : ''
+// Current month/year label in header
+const currentMonthYearLabel = computed(() => {
+  const start = new Date(startOfWeek.value)
+  const end = new Date(startOfWeek.value)
+  end.setDate(end.getDate() + 6)
+
+  const optMonth = { month: 'long', year: 'numeric' }
+  return start.toLocaleDateString('en-US', optMonth)
 })
 
-// Filtered Team Leaves strictly based on selectedDay
+// Selected date formatted for section title
+const selectedDayFormatted = computed(() => {
+  const found = dynamicWeekDays.value.find(d => d.dateKey === selectedDateKey.value)
+  if (found) {
+    const opt = { day: 'numeric', month: 'short', year: 'numeric' }
+    return `${found.dayName}, ${found.fullDate.toLocaleDateString('en-US', opt)}`
+  }
+  return selectedDateKey.value
+})
+
+const isSelectedDatePast = computed(() => {
+  const found = dynamicWeekDays.value.find(d => d.dateKey === selectedDateKey.value)
+  return found ? found.isPast : false
+})
+
+// Filtered Team Leaves strictly based on selectedDateKey
 const filteredTeamLeaves = computed(() => {
-  return masterTeamLeaves.filter(leave => leave.dates.includes(selectedDay.value))
+  const found = dynamicWeekDays.value.find(d => d.dateKey === selectedDateKey.value)
+  if (!found || found.isPast || found.isSundayOrMonday) {
+    return []
+  }
+  return masterTeamLeaves.filter(leave => leave.dateKeys.includes(selectedDateKey.value))
 })
 
-// Filtered Sessions strictly based on selectedDay
+// Filtered Sessions strictly based on selectedDateKey
 const filteredSessions = computed(() => {
-  return masterSessions.filter(session => session.dates.includes(selectedDay.value))
+  return masterSessions.filter(session => session.dateKeys.includes(selectedDateKey.value))
 })
 
-const openNewMeetingModal = () => {
-  alert('Open New Meeting Form Dialog')
+const selectDay = (day) => {
+  selectedDateKey.value = day.dateKey
+}
+
+const nextWeek = () => {
+  currentWeekOffset.value++
+  // Auto select Wednesday of that week or the first day of that week
+  const nextDays = dynamicWeekDays.value
+  selectedDateKey.value = nextDays[3]?.dateKey || nextDays[0]?.dateKey
+}
+
+const prevWeek = () => {
+  currentWeekOffset.value--
+  const prevDays = dynamicWeekDays.value
+  selectedDateKey.value = prevDays[3]?.dateKey || prevDays[0]?.dateKey
+}
+
+const resetToCurrentWeek = () => {
+  currentWeekOffset.value = 0
+  selectedDateKey.value = '2026-09-09'
 }
 </script>

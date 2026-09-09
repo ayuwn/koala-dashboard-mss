@@ -346,14 +346,14 @@ export const pendingActivityData = [
     urgent: false
   },
   {
-    id: 'REQ-RM-045',
-    type: 'Reimbursement',
-    category: 'Transport & Parking Client',
+    id: 'REQ-OT-145',
+    type: 'Overtime',
+    category: 'Standby Deployment Support',
     employee: 'Zulfami Kemal',
     employeeId: 'EMP-004',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    period: 'Rp 385.000',
-    reason: 'Transport kunjungan audit QA On-site Client BSIM',
+    period: '23 Mar 2026 (4.0 Jam)',
+    reason: 'Standby migrasi core infrastructure BSIM',
     submittedAt: '1 hari yang lalu',
     status: 'Pending Approval',
     urgent: false

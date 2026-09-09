@@ -75,8 +75,8 @@
         </div>
       </div>
 
-      <!-- Quick Metrics Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+      <!-- Quick Metrics Grid (Leave, OT, Timesheet) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
         <div class="p-2.5 rounded-xl glossy-item text-center">
           <span class="text-[10px] text-slate-400 font-medium">Leave Remaining</span>
           <p class="text-xs sm:text-[13px] font-bold text-koala-blue-900 mt-0.5">
@@ -88,13 +88,6 @@
           <span class="text-[10px] text-slate-400 font-medium">Overtime Hours</span>
           <p class="text-xs sm:text-[13px] font-bold text-koala-orange-600 mt-0.5">
             {{ selectedEmployee.overtimeHours }} Hours
-          </p>
-        </div>
-
-        <div class="p-2.5 rounded-xl glossy-item text-center">
-          <span class="text-[10px] text-slate-400 font-medium">Reimbursement</span>
-          <p class="text-xs sm:text-[13px] font-bold text-slate-800 mt-0.5">
-            Rp {{ (selectedEmployee.reimbursementTotal).toLocaleString() }}
           </p>
         </div>
 
