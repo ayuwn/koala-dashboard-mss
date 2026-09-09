@@ -29,8 +29,8 @@
         </div>
       </div>
       <div v-else class="mx-auto">
-        <div class="w-8 h-8 rounded-xl bg-koala-blue-500 flex items-center justify-center shadow-md">
-          <img src="/src/assets/images/kahf-icon.png" alt="KAHF" class="w-5 h-5 object-contain" />
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center">
+          <img src="/src/assets/images/kahf-white.png" alt="KAHF" class="w-7 h-7 object-contain" />
         </div>
       </div>
       <!-- Collapse Toggle (Desktop only) -->

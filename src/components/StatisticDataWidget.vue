@@ -455,13 +455,39 @@ const renderChart = () => {
             boxHeight: 10
           }
         },
+        // tooltip: {
+        //   backgroundColor: 'rgba(2, 73, 129, 0.95)',
+        //   titleFont: { family: 'Geist, sans-serif', size: 11, weight: 'bold' },
+        //   bodyFont: { family: 'Geist, sans-serif', size: 11 },
+        //   padding: 10,
+        //   cornerRadius: 8,
+        //   boxPadding: 4
+        // }
         tooltip: {
           backgroundColor: 'rgba(2, 73, 129, 0.95)',
-          titleFont: { family: 'Geist, sans-serif', size: 11, weight: 'bold' },
-          bodyFont: { family: 'Geist, sans-serif', size: 11 },
+          titleFont: {
+            family: 'Geist, sans-serif',
+            size: 11,
+            weight: 'bold'
+          },
+          bodyFont: {
+            family: 'Geist, sans-serif',
+            size: 11
+          },
           padding: 10,
           cornerRadius: 8,
-          boxPadding: 4
+          boxPadding: 4,
+          callbacks: {
+            label: (context) => {
+              const value = context.parsed.y ?? context.parsed
+
+              if (isAll) {
+                return `${context.dataset.label}: ${value} ${config.unit}`
+              }
+
+              return `${value} ${config.unit}`
+            }
+          }
         }
       },
       scales: scales

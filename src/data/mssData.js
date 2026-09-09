@@ -87,7 +87,7 @@ export const employeeShortNames = [
   'Ahmad Mukafi',
   'Sikah Nurbayati',
   'Zulfami Kemal',
-  'Sayyid Altaqi'
+  'Sayyid Taqi'
 ]
 
 // Specific employee stats:
