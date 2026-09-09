@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Geist', 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1e293b;
+    background-color: #F6F9FD;
+    letter-spacing: -0.015em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+  }
+}
+
+/* Minimalist Glossy Glassmorphism Components */
+@layer components {
+  .glossy-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.75) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 24px -2px rgba(2, 73, 129, 0.05), 
+                0 1px 4px -1px rgba(0, 0, 0, 0.02), 
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  .glossy-card-hover {
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .glossy-card-hover:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+    border-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 10px 32px -4px rgba(2, 73, 129, 0.1), 
+                0 2px 8px -1px rgba(0, 0, 0, 0.03), 
+                inset 0 1px 1.5px 0 rgba(255, 255, 255, 1);
+    transform: translateY(-1.5px);
+  }
+
+  .glossy-item {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 1px 4px rgba(2, 73, 129, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .glossy-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(185, 218, 251, 0.7);
+    box-shadow: 0 3px 12px rgba(2, 73, 129, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+
+  .glossy-nav {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 20px -2px rgba(2, 73, 129, 0.03);
+  }
+
+  .glossy-sidebar {
+    background: linear-gradient(180deg, #012f54 0%, #024981 60%, #01395e 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 4px 0 32px -4px rgba(1, 47, 84, 0.35);
+  }
+
+  .glossy-pill {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 4px rgba(2, 73, 129, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease;
+  }
+
+  .glossy-pill:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(185, 218, 251, 0.7);
+  }
+}
+
+/* Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94BDDD;
+}
+
+/* Datepicker Styling */
+.dp__theme_light {
+  --dp-primary-color: #0069A7;
+  --dp-border-radius: 0.625rem;
+  --dp-font-family: 'Geist', 'Geist Sans', sans-serif;
+  --dp-font-size: 0.75rem;
+  --dp-background-color: rgba(255, 255, 255, 0.95);
+}
+
+.dp__input {
+  font-size: 0.75rem !important;
+  font-family: 'Geist', 'Geist Sans', sans-serif !important;
+  background: transparent !important;
+  border: none !important;
+}
